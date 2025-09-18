@@ -1,7 +1,7 @@
 #include<stdio.h>
 void main(){
 		// Program 1
-//	printf("Meet Solanki\n\tIndore instute of science and technology\n\t\tIndore");
+//	printf("kushagra holkar\n\tIndore instute of science and technology\n\t\tIndore");
 
 
    		// Program2 {Sum of two num}
