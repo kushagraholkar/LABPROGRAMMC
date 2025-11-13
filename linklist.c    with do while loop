@@ -1,0 +1,206 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+// ---------- Structure Definition ----------
+struct Student {
+int roll;
+char name[50];
+struct Student *next;
+};
+// ---------- Global (External) Variable ----------
+int count = 0; // Keeps track of total number of nodes
+// ---------- Function Declarations ----------
+void insertAtPosition(struct Student **head, int position, int roll, char name[]);
+void deleteAtPosition(struct Student **head, int position);
+void deleteByElement(struct Student **head, int roll);
+void searchNode(struct Student *head, int roll);
+void displayList(struct Student *head);
+// ---------- Function Definitions ----------
+// Insert node at given position
+void insertAtPosition(struct Student **head, int position, int roll, char name[]) {
+if (position < 1 || position > count + 1) {
+printf("\nInvalid position! Current size: %d\n"
+, count);
+return;
+}
+struct Student *newNode = (struct Student *)malloc(sizeof(struct Student));
+newNode->roll = roll;
+strcpy(newNode->name, name);
+newNode->next = NULL;
+if (position == 1) {
+newNode->next = *head;
+*head = newNode;
+} else {
+struct Student *temp = *head;
+for (int i = 1; i < position - 1; i++)
+temp = temp->next;
+newNode->next = temp->next;
+temp->next = newNode;
+}
+count++;
+printf("Node inserted successfully at position %d.\n"
+, position);
+}
+// Delete node by position
+void deleteAtPosition(struct Student **head, int position) {
+if (*head == NULL) {
+printf("\nList is empty! Nothing to delete.\n");
+return;
+}
+if (position < 1 || position > count) {
+printf("\nInvalid position! Current size: %d\n"
+, count);
+return;
+}
+struct Student *temp = *head;
+if (position == 1) {
+*head = temp->next;
+free(temp);
+} else {
+struct Student *prev = NULL;
+for (int i = 1; i < position; i++) {
+prev = temp;
+temp = temp->next;
+}
+prev->next = temp->next;
+free(temp);
+}
+count--;
+printf("Node deleted successfully from position %d.\n"
+, position);
+}
+// Delete node by element (roll number)
+void deleteByElement(struct Student **head, int roll) {
+if (*head == NULL) {
+printf("\nList is empty! Nothing to delete.\n");
+return;
+}
+struct Student *temp = *head,
+*prev = NULL;
+if (temp != NULL && temp->roll == roll) {
+*head = temp->next;
+free(temp);
+count--;
+printf("Node with Roll No %d deleted successfully.\n"
+, roll);
+return;
+}
+while (temp != NULL && temp->roll != roll) {
+prev = temp;
+temp = temp->next;
+}
+if (temp == NULL) {
+printf("\nNode with Roll No %d not found.\n"
+, roll);
+return;
+}
+prev->next = temp->next;
+free(temp);
+count--;
+printf("Node with Roll No %d deleted successfully.\n"
+, roll);
+}
+// Search node by roll number
+void searchNode(struct Student *head, int roll) {
+if (head == NULL) {
+printf("\nList is empty!\n");
+return;
+}
+struct Student *temp = head;
+int position = 1;
+while (temp != NULL) {
+if (temp->roll == roll) {
+printf("\nNode Found at Position %d\n"
+, position);
+printf("Roll No: %d\nName: %s\n"
+, temp->roll, temp->name);
+return;
+}
+temp = temp->next;
+position++;
+}
+printf("\nNode with Roll No %d not found.\n"
+, roll);
+}
+// Display list
+void displayList(struct Student *head) {
+if (head == NULL) {
+printf("\nList is empty!\n");
+return;
+}
+printf("\n%-10s %-20s\n"
+,
+"Roll No"
+,
+"Name");
+struct Student *temp = head;
+while (temp != NULL) {
+printf("%-10d %-20s\n"
+, temp->roll, temp->name);
+temp = temp->next;
+}
+printf("\nTotal Nodes: %d\n"
+, count);
+}
+// ---------- Main Function ----------
+int main() {
+struct Student *head = NULL;
+int choice, position, roll;
+char name[50];
+while (1) {
+printf("\n===== Linked List Menu =====\n");
+printf("1. Insert Node at Position\n");
+printf("2. Delete Node by Position\n");
+printf("3. Delete Node by Roll No (Element)\n");
+printf("4. Search Node by Roll No\n");
+printf("5. Display List\n");
+printf("6. Exit\n");
+printf("Enter your choice: ");
+scanf("%d"
+, &choice);
+getchar(); // clear input buffer after number input
+switch (choice) {
+case 1:
+printf("Enter position to insert: ");
+scanf("%d"
+, &position);
+getchar(); // clear newline
+printf("Enter Roll No: ");
+scanf("%d"
+, &roll);
+getchar(); // clear newline
+printf("Enter Name: ");
+scanf(" %[^\n]"
+, name); // reads name with spaces
+insertAtPosition(&head, position, roll, name);
+break;
+case 2:
+printf("Enter position to delete: ");
+scanf("%d"
+, &position);
+deleteAtPosition(&head, position);
+break;
+case 3:
+printf("Enter Roll No to delete: ");
+scanf("%d"
+, &roll);
+deleteByElement(&head, roll);
+break;
+case 4:
+printf("Enter Roll No to search: ");
+scanf("%d"
+, &roll);
+searchNode(head, roll);
+break;
+case 5:
+displayList(head);
+break;
+case 6:
+printf("\nExiting program... Goodbye!\n");
+exit(0);
+default:
+printf("\nInvalid choice! Please try again.\n");
+}
+}
+return 0;
+}
